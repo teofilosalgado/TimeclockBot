@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Net;
+using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -28,13 +29,18 @@ namespace TimeclockBot.Functions
         private static HttpClient client;
 
         [FunctionName("Execute")]
-        public static async Task Run([TimerTrigger("0 */5 * * * *")] TimerInfo myTimer, ILogger log)
+        public static async Task Run([TimerTrigger("0 08,12,14,18 * * 1-5")] TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"[TimeclockBot.Functions.Execute] Timer trigger function started at: {DateTime.Now}");
 
             string user = Environment.GetEnvironmentVariable("SENIOR_USER");
             string password = Environment.GetEnvironmentVariable("SENIOR_PASSWORD");
             string suffix = Environment.GetEnvironmentVariable("SENIOR_SUFFIX");
+            string latitudeRaw = Environment.GetEnvironmentVariable("SENIOR_LAT");
+            string longitudeRaw = Environment.GetEnvironmentVariable("SENIOR_LNG");
+
+            double latitude = Convert.ToDouble(latitudeRaw, CultureInfo.InvariantCulture);
+            double longitude = Convert.ToDouble(longitudeRaw, CultureInfo.InvariantCulture);
 
             cookies = new CookieContainer();
             handler = new HttpClientHandler
@@ -49,7 +55,7 @@ namespace TimeclockBot.Functions
 
             await Login(user, password, suffix);
             Employee employee = await GetEmployee();
-            await Clocking(employee);
+            await Clocking(employee, latitude, longitude);
             await Logout();
             log.LogInformation($"[TimeclockBot.Functions.Execute] Timer trigger function finished at: {DateTime.Now}");
         }
@@ -87,21 +93,12 @@ namespace TimeclockBot.Functions
             return employee;
         }
 
-        private static async Task Clocking(Employee employee)
+        private static async Task Clocking(Employee employee, double latitude, double longitude)
         {
-            Random random = new Random();
-            var Latitude = random.NextDouble();
-
-            // var latmin = -21.5438000;
-            // var latmax = -21.5439000;
-
-            // var longmin = -45.4513000;
-            // var longmax = -45.4514000;
-
             Geolocation geolocation = new Geolocation
             {
-                Latitude = -21.5473977,
-                Longitude = -45.4530969,
+                Latitude = latitude,
+                Longitude = longitude,
                 DateAndTime = DateTime.UtcNow.ToString("O")
             };
             Clocking entry = new Clocking
