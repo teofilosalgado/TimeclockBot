@@ -34,6 +34,7 @@ namespace TimeclockBot.Functions
 
             string user = Environment.GetEnvironmentVariable("SENIOR_USER");
             string password = Environment.GetEnvironmentVariable("SENIOR_PASSWORD");
+            string suffix = Environment.GetEnvironmentVariable("SENIOR_SUFFIX");
 
             cookies = new CookieContainer();
             handler = new HttpClientHandler
@@ -46,21 +47,21 @@ namespace TimeclockBot.Functions
             client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0");
             client.BaseAddress = new Uri(BASE_URL);
 
-            await Login(user, password);
+            await Login(user, password, suffix);
             Employee employee = await GetEmployee();
             await Clocking(employee);
             await Logout();
             log.LogInformation($"[TimeclockBot.Functions.Execute] Timer trigger function finished at: {DateTime.Now}");
         }
 
-        private static async Task Login(string user, string password)
+        private static async Task Login(string user, string password, string suffix)
         {
             await client.GetAsync(LOGIN_URL);
             Dictionary<string, string> credentials = new Dictionary<string, string>
             {
                 {"redirectTo", "https://platform.senior.com.br/senior-x/"},
                 {"lng", ""},
-                {"emailSuffix", "kpmg.com.br"},
+                {"emailSuffix", suffix},
                 {"expirationRememberMe", "-1"},
                 {"scope", ""},
                 {"user", user},
@@ -88,6 +89,15 @@ namespace TimeclockBot.Functions
 
         private static async Task Clocking(Employee employee)
         {
+            Random random = new Random();
+            var Latitude = random.NextDouble();
+
+            // var latmin = -21.5438000;
+            // var latmax = -21.5439000;
+
+            // var longmin = -45.4513000;
+            // var longmax = -45.4514000;
+
             Geolocation geolocation = new Geolocation
             {
                 Latitude = -21.5473977,
