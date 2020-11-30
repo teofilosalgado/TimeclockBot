@@ -29,7 +29,7 @@ namespace TimeclockBot.Functions
         private static HttpClient client;
 
         [FunctionName("Execute")]
-        public static async Task Run([TimerTrigger("0 11,15,17,21 * * 1-5")] TimerInfo myTimer, ILogger log)
+        public static async Task Run([TimerTrigger("0 0 08,12,14,18 * * 1-5")] TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"[TimeclockBot.Functions.Execute] Timer trigger function started at: {DateTime.Now}");
 

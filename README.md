@@ -14,6 +14,7 @@ SENIOR_PASSWORD=[sua senha]
 SENIOR_SUFFIX=[sufixo do seu email empresarial]
 SENIOR_LAT=[latitude da sua localização, em decimais]
 SENIOR_LNG=[longitude da sua localização, em decimais]
+WEBSITE_TIME_ZONE=E. South America Standard Time
 ```
 
 Depois disso é só deployar manualmente ou através do botão abaixo:
