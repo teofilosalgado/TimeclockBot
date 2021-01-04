@@ -8,10 +8,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using TimeclockBot.Models;
-using TimeclockBot.Serializer;
+using TimeclockBot.Serializers;
 
 namespace TimeclockBot.Functions
 {

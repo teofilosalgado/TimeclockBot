@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using TimeclockBot.Models;
 
-namespace TimeclockBot.Serializer
+namespace TimeclockBot.Serializers
 {
     class ClockingSerializer
     {
